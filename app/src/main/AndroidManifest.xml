@@ -17,7 +17,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.android.dessertpusher">
 
+    <!-- 6-3. Add the application class to the manifest:-->
     <application
+        android:name=".PusherApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_dessert_pusher"
         android:label="@string/app_name"

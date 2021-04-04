@@ -18,6 +18,7 @@ package com.example.android.dessertpusher
 
 import android.content.ActivityNotFoundException
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -26,11 +27,20 @@ import androidx.core.app.ShareCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleObserver
 import com.example.android.dessertpusher.databinding.ActivityMainBinding
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     private var revenue = 0
     private var dessertsSold = 0
+
+    companion object {
+        private const val KEY_REVENUE = "KEY_REVENUE"
+        private const val KEY_DESSERT_SOLD = "KEY_DESSERT_SOLD"
+    }
+
+    // 15-2.
+    private lateinit var dessertTimer: DessertTimer
 
     // Contains all the views
     private lateinit var binding: ActivityMainBinding
@@ -65,11 +75,23 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Add a log message to onCreate - an info level log statement
+        // 6-5. Update log statements from previous exercise to timber logs:
+        Timber.i("onCreate Called")
+
         // Use Data Binding to get reference to the views
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
+        // 15-2 Initialize DessertTimer in onCreate callback of Main Activity:
+        dessertTimer = DessertTimer(this.lifecycle)
+
         binding.dessertButton.setOnClickListener {
             onDessertClicked()
+        }
+
+        if (savedInstanceState != null) {
+           // revenue = savedInstanceState.getInt(KEY_REVENUE, 0)
+           // dessertsSold = savedInstanceState.getInt(KEY_DESSERT_SOLD, 0)
         }
 
         // Set the TextViews to the right values
@@ -78,6 +100,56 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
 
         // Make sure the correct dessert is showing
         binding.dessertButton.setImageResource(currentDessert.imageId)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Log.i("MainActivity","onStart callback called")
+        // 6-5. Update log statements from previous exercise to timber logs:
+        Timber.i("onStart Called")
+        //15-3. Start DessertTimer in onStart and stop it in onStop callback:
+//        dessertTimer.startTimer()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // 6-6. Override the rest of the lifecycle methods and use Timber to print log statements for all
+        Timber.i("onResume Called")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Timber.i("onPause Called")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.i("onDestroy Called")
+    }
+
+    override fun onRestart() {
+        super.onRestart()
+        Timber.i("onRestart Called")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Timber.i("onStop Called")
+        // 15-3. Start DessertTimer in onStart and stop it in onStop callback:
+//        dessertTimer.stopTimer()
+    }
+
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt(KEY_REVENUE, revenue)
+        outState.putInt(KEY_DESSERT_SOLD, dessertsSold)
+        Timber.i("onSaveInstanceState Called")
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Timber.i("onRestoreInstanceState Called")
     }
 
     /**
